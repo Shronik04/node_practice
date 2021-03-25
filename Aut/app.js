@@ -4,6 +4,7 @@ const auth = require("./routes/auth");
 const cookieParser = require('cookie-parser')
 const requireAuth = require('./middleware/authMid')
 const cons = require('cors')
+require('dotenv/config')
 // const authCont=require('./controllers/authCont')
 const app = express();
 
@@ -17,10 +18,9 @@ app.use(cookieParser());
 app.set("view engine", "ejs");
 
 //connection
-const dbURI =
-	"mongodb+srv://Ninja19:Nin1to9@cluster0.rwgx4.mongodb.net/node-auth";
+
 mongoose
-	.connect(dbURI, {
+	.connect(process.env.DB_CONNECTION, {
 		useNewUrlParser: true,
 		useUnifiedTopology: true,
 		useCreateIndex: true,
