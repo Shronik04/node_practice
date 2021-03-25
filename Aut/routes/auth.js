@@ -19,6 +19,14 @@ router.post('/login',
 
     authCont.login_post
 )
+router.get('/admin',
+
+    authCont.admin_get
+)
+router.get('/user',
+
+    authCont.user_get
+)
 
 
 
