@@ -3,15 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 <%- include('./partials/nav.ejs') %>
     <h1>this is html page</h1>
 <h2>have fun</h2>
 
-<h4> <%=blogs[0].title%> </h4>
-<p> <%=blogs[0].snippet%> </p>
-
+<% if (blogs.length > 0) { %>
+    <% blogs.forEach(blog => { %>
+      <a class="single" href="/blogs/<%= blog._id %>">
+        <h3 class="title"><%= blog.title %></h3>
+        <p class="snippet"><%= blog.snippet %></p>
+      </a>
+    <% }) %>
+  <% } else { %>
+    <p>There are no blogs to display...</p>
+  <% } %>
 
 
 </body>

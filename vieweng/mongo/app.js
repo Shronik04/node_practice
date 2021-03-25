@@ -1,5 +1,8 @@
 const express = require('express')
-const mongoose =require('mongoose')
+const mongoose = require('mongoose')
+const Blog =require('./models/blogs')
+
+
 const app = express();
 
 //mongo connection
@@ -12,13 +15,89 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     console.log(err);
 })
 
+//static
+app.use(express.static('public'))
+app.use(express.urlencoded({ extended: true }));
 
+
+app.get('/add-blog', (req, res) => {
+    const blog = new Blog({
+    
+        title: 'new blog 4',
+        snippet: 'about the blog',
+        body:'new body'
+        
+    })
+    blog.save()
+        .then((result) => {
+        res.send(result)
+        })
+        .catch((err) => {
+        console.log(err);
+    })
+})
+app.get('/find-blog', (req, res) => {
+    Blog.findByIdAndDelete("605ad94334c6972986fc4203")
+        .then((result) => {
+        res.send(result)
+        })
+        .catch((err) => {
+        console.log(err);
+    })
+})
+app.get('/blogs', (req, res) => {
+    Blog.find().sort({ createdAt: -1 })
+      .then(result => {
+        res.render('index', { blogs: result, title: 'All blogs' });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  });
+
+app.get('/blogs/create', (req, res) => {
+    res.render('create', { title: "create a new blog" });
+})
+
+app.post('/blogs', (req, res) => {
+    const blog = new Blog(req.body);
+    blog.save()
+        .then(() => {
+            console.log(req.body);
+            res.redirect('/blogs')
+    })
+})
+
+app.get('/blogs/:id', (req, res) => {
+    const id = req.params.id;
+    Blog.findById(id)
+      .then(result => {
+        res.render('show', { blog: result, title: 'Blog Details' });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  });
+
+  app.delete('/blogs/:id', (req, res) => {
+    const id = req.params.id;
+    
+    Blog.findByIdAndDelete(id)
+      .then(result => {
+        res.json({ redirect: '/blogs' });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  });
+  
+
+
+//vieweng & ejs
 app.set('view engine','ejs')
 app.set('views','view')
 //request
 app.listen(3000);
-
-
 
 app.get('/', (req, res) => {
     const blogs = [{ title: 'abc', snippet: 'bsf' },
@@ -30,7 +109,7 @@ app.get('/', (req, res) => {
 
 
 app.use((req,res,next) => {
-    console.log("sachin ");
+    console.log("nextOp");
     next();
 })
 
